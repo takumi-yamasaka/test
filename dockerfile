@@ -1,12 +1,15 @@
-# Dockerfile
-FROM php:7.4-fpm
+FROM php:8.1-fpm-alpine
 
 WORKDIR /var/www/html
 
-# PHPとLaravelに必要な拡張機能をインストール
-RUN docker-php-ext-install pdo_mysql
-RUN apt-get update && \
-    apt-get install -y zip unzip
-
-# Composerのインストール
-COPY --from=composer /usr/bin/composer /usr/bin/composer
+RUN apk add --no-cache --virtual .build-deps \
+      $PHPIZE_DEPS \
+      zlib-dev \
+      libpng-dev \
+   && docker-php-source extract \
+   && docker-php-ext-install -j$(nproc) \
+      gd \
+      pdo_mysql \
+      zip \
+   && docker-php-source delete \
+   && apk del .build-deps
