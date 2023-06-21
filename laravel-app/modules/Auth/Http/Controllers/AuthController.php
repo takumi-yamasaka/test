@@ -2,78 +2,36 @@
 
 namespace Modules\Auth\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
 
 class AuthController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     * @return Renderable
-     */
-    public function index()
+    protected $authService;
+
+    public function __construct(AuthService $authService)
     {
-        return view('auth::index');
+        $this->authService = $authService;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     * @return Renderable
-     */
-    public function create()
+    public function register(Request $request)
     {
-        return view('auth::create');
+        // Validation logic...
+        
+        $user = $this->authService->register($request->all());
+
+        // Redirect, flash message, etc...
     }
 
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
-     */
-    public function store(Request $request)
+    public function login(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function show($id)
-    {
-        return view('auth::show');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function edit($id)
-    {
-        return view('auth::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Renderable
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
-     */
-    public function destroy($id)
-    {
-        //
+        // Validation logic...
+        
+        if ($this->authService->login($request->email, $request->password)) {
+            // Redirect, set session, etc...
+        } else {
+            return back()->withErrors(['email' => 'Incorrect email or password']);
+        }
     }
 }
