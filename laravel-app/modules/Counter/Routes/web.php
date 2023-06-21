@@ -1,16 +1,10 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+use Illuminate\Support\Facades\Route;
+use App\Modules\Count\Http\Controllers\CountController;
 
-Route::prefix('counter')->group(function() {
-    Route::get('/', 'CounterController@index');
+Route::group(['namespace' => 'App\Modules\Count\Http\Controllers', 'as' => 'count.'], function() {
+    Route::get('/count', [CountController::class, 'index'])->name('index');
+    Route::post('/count/increment', [CountController::class, 'increment'])->name('increment');
+    Route::post('/count/decrement', [CountController::class, 'decrement'])->name('decrement');
 });
